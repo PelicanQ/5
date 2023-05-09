@@ -8,10 +8,13 @@ import matplotlib as mpl
 import calfem.vis_mpl as cfv
 
 left_wall = 10
+left_wall_line = 20
+copper = 30
+nylon = 40
 
 g = cfg.Geometry() # copper
 
-g.point([0.0, 0.5*L-a-b], marker=left_wall)
+g.point([0.0, 0.5*L-a-b])
 g.point([a, 0.5*L-a-b])
 g.point([a, 0.5*L-a-b-h])
 g.point([a+t, 0.5*L-a-b-h])
@@ -28,9 +31,9 @@ g.point([a+c+d, 0.5*L-b-d])
 g.point([a+c, 0.5*L-b])
 g.point([a, 0.5*L-b])
 g.point([a, 0.5*L])
-g.point([0.0, 0.5*L], marker=left_wall)
-g.point([0.0, 0.5*L-b], marker=left_wall)
-g.point([0.0, 0.0], marker=left_wall)
+g.point([0.0, 0.5*L])
+g.point([0.0, 0.5*L-b])
+g.point([0.0, 0.0]) # tis one has to be last
 
 
 # Copper
@@ -52,7 +55,7 @@ g.spline([13, 14])
 g.spline([14, 15])
 g.spline([15, 16])
 g.spline([16, 17])
-g.spline([17, 18])
+g.spline([17, 18], marker=left_wall_line)
 g.spline([18, 0])
 
 # Nylon
@@ -60,8 +63,8 @@ g.spline([19, 0])
 g.spline([6, 19])
 
 cfv.draw_geometry(g)
-cfv.show_and_wait()
+# cfv.show_and_wait()
 # Create two Surfaces. Loop all point numbers except origin, hence minus one
 lines = [i for i in range(len(g.points)-1)]
-g.surface(lines)
-g.surface([0,1,2,3,4,5,20,19])
+g.surface(lines, marker=copper)
+g.surface([0,1,2,3,4,5,20,19], marker=nylon)
