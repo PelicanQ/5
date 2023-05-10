@@ -9,6 +9,7 @@ import calfem.vis_mpl as cfv
 
 left_wall = 10
 left_wall_line = 20
+dirichlet_wall = 25
 copper = 30
 nylon = 40
 
@@ -45,15 +46,15 @@ g.spline([3, 4])
 g.spline([4, 5])
 g.spline([5, 6])
 g.spline([6, 7])
-g.spline([7, 8])
-g.spline([8, 9])
+g.spline([7, 8], marker=dirichlet_wall)
+g.spline([8, 9], marker=dirichlet_wall)
 g.spline([9, 10])
-g.spline([10, 11])
-g.spline([11, 12])
-g.spline([12, 13])
-g.spline([13, 14])
-g.spline([14, 15])
-g.spline([15, 16])
+g.spline([10, 11], marker=dirichlet_wall)
+g.spline([11, 12], marker=dirichlet_wall)
+g.spline([12, 13], marker=dirichlet_wall)
+g.spline([13, 14], marker=dirichlet_wall)
+g.spline([14, 15], marker=dirichlet_wall)
+g.spline([15, 16], marker=dirichlet_wall)
 g.spline([16, 17])
 g.spline([17, 18], marker=left_wall_line)
 g.spline([18, 0])
@@ -62,9 +63,9 @@ g.spline([18, 0])
 g.spline([19, 0])
 g.spline([6, 19])
 
-cfv.draw_geometry(g)
-# cfv.show_and_wait()
 # Create two Surfaces. Loop all point numbers except origin, hence minus one
 lines = [i for i in range(len(g.points)-1)]
 g.surface(lines, marker=copper)
 g.surface([0,1,2,3,4,5,20,19], marker=nylon)
+# cfv.draw_geometry(g)
+# cfv.show_and_wait()
