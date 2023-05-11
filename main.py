@@ -104,3 +104,10 @@ cfv.show_and_wait()
 # Först en frihetsgrad på stationärt
 # Kolla Konvektionsproblemet i boken
 # Fb integralen, som sedan adderas till Ka
+
+#transient:
+#C-matris från plantml
+#välj deltat rimligt
+#trapetsmetod med theta=1, nudiffa allt:
+#a_n+1=(C+delta_t)^-1*(Ca_n+delta_t*f_k+1)
+#
