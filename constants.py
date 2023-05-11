@@ -16,6 +16,7 @@ k2 = 0.26       #W/m-K
 
 a_c = 40        #W/m^2K
 T_inf = 18       #grader C
+T_0 = 18       #grader C
 h_flow = -10**5       #W/m^2
 
 #Sidor
@@ -26,7 +27,7 @@ c = 0.3*L
 d = 0.05*L
 h = 0.15*L
 t = 0.05*L
-thickness = 5e-3 #mm
+thickness = 5e-3 #m
 
 ptype = 1 # plane stress
 ep = [thickness]

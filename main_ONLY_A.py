@@ -1,14 +1,13 @@
+import numpy as np
+import matplotlib.pylab as plt
 import calfem.core as cfc
 import calfem.geometry as cfg
 import calfem.mesh as cfm
-import calfem.utils as cfu
 import calfem.vis_mpl as cfv
-import numpy as np
-
-from constants import (D1, D2, T_inf, a_c, cp1, cp2, ep, h_flow, ny2, rho1, rho2, thickness, T_0)
-from geom import copper, dirichlet_wall, g, left_wall_line
+import calfem.utils as cfu
+from geom import g, left_wall, left_wall_line, copper, dirichlet_wall
 from lines_along_spline import extract_lines, line_length
-from plantml import plantml
+from constants import D1, D2, ny2, ny1, ep, h, t, thickness, T_inf, h_flow, a_c
 
 #1 copper
 #2 nylon
@@ -46,11 +45,11 @@ nDofs = np.size(dofs)
 ex, ey = cfc.coordxtr(edof, coords, dofs)
 
 # Create the global stiffness matrix
-K_h = np.zeros([nDofs,nDofs])
+K = np.zeros([nDofs,nDofs])
 for eltopo, elx, ely, marker in zip(edof, ex, ey, elementmarkers):
   D = D1 if marker == copper else D2
   Ke = cfc.flw2te(elx, ely, ep, D) # 3x3 för stat
-  cfc.assem(eltopo, K_h, Ke)
+  cfc.assem(eltopo, K, Ke)
 
 # Now we consider load vector. We need coordinates of dofs along a marked spline
 lines_coords_flux = []
@@ -88,9 +87,6 @@ for line_dofs, line_coords in zip(lines_dofs_conv, lines_coords_conv):
   f_c[dof0_idx] += f_val
   f_c[dof1_idx] += f_val
 
-f = f_c + f_h
-K = K_h + K_c
-
 # cfv.plt.spy(K_c)
 
 # We now set the Dirchlet boundary conditions. Create two lists of dofs and corresponding vale
@@ -98,51 +94,12 @@ bc_dofs = np.array(bdofs[dirichlet_wall])
 bc_vals = np.ones_like(bc_dofs) * T_inf
 
 # Solve the matrix equation
-a = np.linalg.solve(K, f)
-T_stat_max = np.max(a)
+a = np.linalg.solve(K + K_c, f_h + f_c)
 
-cfv.draw_nodal_values_shaded(a, coords, edof, 'Stationary solution', mesh.dofs_per_node, mesh.el_type, True)
+cfv.draw_nodal_values_shaded(a, coords, edof, 'Yani gås', mesh.dofs_per_node, mesh.el_type, True)
 cfv.colorbar()
-# cfv.show_and_wait()
+cfv.show_and_wait()
 
-# input('Press Enter for task B')
-
-
-
-#################### Lets go task B!##################
-
-C = np.zeros([nDofs, nDofs])
-
-for el_edof, el_ex, el_ey, el_marker in zip(edof, ex, ey, elementmarkers):
-  rho = rho1 if el_marker == copper else rho2
-  cp = cp1 if el_marker == copper else cp2
-  C_e = plantml(el_ex, el_ey, thickness * rho * cp)
-  
-  cfc.assem(el_edof, C, C_e)
-
-# cfv.plt.spy(C)
-t0 = 0
-t1 = 80
-dt = 0.05
-
-tt = np.arange(t0, t1, dt)
-temps = np.empty((nDofs, tt.size))
-temps[:, 0] = np.ones(nDofs) * T_0
-
-for idx in range(tt.size - 1):
-  prev_temps = temps[:, idx] 
-  f_1D = np.reshape(f, (nDofs))
-  next_temps = np.linalg.solve(C + dt*K, C@prev_temps + dt*f_1D)
-  temps[:, idx+1] = next_temps
-  
-# print(temps)
-T_90 = 0.9 * T_stat_max
-max_temps = np.max(temps, axis=0)
-index_T90 = np.argmax(max_temps > T_90)  
-# cfv.plt.plot(np.linalg.norm(temps, axis=0))
-# cfv.plt.show()
-print(max_temps)
-print(tt[index_T90])
 
 # Först en frihetsgrad på stationärt
 # Kolla Konvektionsproblemet i boken
