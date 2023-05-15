@@ -134,7 +134,7 @@ for idx in range(tt.size - 1):
   f_1D = np.reshape(f, (nDofs))
   next_temps = np.linalg.solve(C + dt*K, C@prev_temps + dt*f_1D)
   temps[:, idx+1] = next_temps
-  
+
 max_temps = np.max(temps, axis=0)
 index_T90 = np.argmax(max_temps >  0.9 * T_stat_max)  
 
@@ -151,7 +151,7 @@ five_temps = [
   # cfv.colorbar()
   # cfv.show()
 
-print('Time to 90% max ' + str(tt[index_T90]) + ' seconds')
+#print('Time to 90% max ' + str(tt[index_T90]) + ' seconds')
 
 # Först en frihetsgrad på stationärt
 # Kolla Konvektionsproblemet i boken
