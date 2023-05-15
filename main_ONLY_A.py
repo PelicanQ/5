@@ -5,14 +5,14 @@ import calfem.geometry as cfg
 import calfem.mesh as cfm
 import calfem.vis_mpl as cfv
 import calfem.utils as cfu
-from geom import g, left_wall, left_wall_line, copper, dirichlet_wall
+from geom import geom, fixed_wall, left_wall_line, copper, dirichlet_wall
 from lines_along_spline import extract_lines, line_length
-from constants import D1, D2, ny2, ny1, ep, h, t, thickness, T_inf, h_flow, a_c
+from constants import D1, D2, ny2, ny1, h, t, thickness, T_inf, h_flow, a_c
 
 #1 copper
 #2 nylon
 
-mesh = cfm.GmshMesh(g)
+mesh = cfm.GmshMesh(geom)
 
 mesh.el_type = 2
 mesh.dofs_per_node = 1 # three cuz temp and poss'es
@@ -48,7 +48,7 @@ ex, ey = cfc.coordxtr(edof, coords, dofs)
 K = np.zeros([nDofs,nDofs])
 for eltopo, elx, ely, marker in zip(edof, ex, ey, elementmarkers):
   D = D1 if marker == copper else D2
-  Ke = cfc.flw2te(elx, ely, ep, D) # 3x3 för stat
+  Ke = cfc.flw2te(elx, ely, [thickness], D) # 3x3 för stat
   cfc.assem(eltopo, K, Ke)
 
 # Now we consider load vector. We need coordinates of dofs along a marked spline

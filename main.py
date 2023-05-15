@@ -5,15 +5,15 @@ import calfem.utils as cfu
 import calfem.vis_mpl as cfv
 import numpy as np
 
-from constants import (D1, D2, T_inf, a_c, cp1, cp2, ep, h_flow, ny2, rho1, rho2, thickness, T_0)
-from geom import copper, dirichlet_wall, g, left_wall_line
+from constants import (D1, D2, T_inf, a_c, cp1, cp2, h_flow, ny2, rho1, rho2, thickness, T_0, E1, E2, ny1, ny2, ptype)
+from geom import copper, dirichlet_wall, geom, left_wall_line
 from lines_along_spline import extract_lines, line_length
 from plantml import plantml
 
 #1 copper
 #2 nylon
 
-mesh = cfm.GmshMesh(g)
+mesh = cfm.GmshMesh(geom)
 
 mesh.el_type = 2
 mesh.dofs_per_node = 1 # three cuz temp and poss'es
@@ -47,9 +47,10 @@ ex, ey = cfc.coordxtr(edof, coords, dofs)
 
 # Create the global stiffness matrix
 K_h = np.zeros([nDofs,nDofs])
+
 for eltopo, elx, ely, marker in zip(edof, ex, ey, elementmarkers):
   D = D1 if marker == copper else D2
-  Ke = cfc.flw2te(elx, ely, ep, D) # 3x3 för stat
+  Ke = cfc.flw2te(elx, ely, [thickness], D) # 3x3 för stat
   cfc.assem(eltopo, K_h, Ke)
 
 # Now we consider load vector. We need coordinates of dofs along a marked spline
@@ -98,16 +99,15 @@ bc_dofs = np.array(bdofs[dirichlet_wall])
 bc_vals = np.ones_like(bc_dofs) * T_inf
 
 # Solve the matrix equation
-a = np.linalg.solve(K, f)
-T_stat_max = np.max(a)
+temps_stat = np.linalg.solve(K, f)
+T_stat_max = np.max(temps_stat)
 
-cfv.draw_nodal_values_shaded(a, coords, edof, 'Stationary solution', mesh.dofs_per_node, mesh.el_type, True)
-cfv.colorbar()
+# Draw stationary solution
+# cfv.draw_nodal_values_shaded(a, coords, edof, 'Stationary solution', mesh.dofs_per_node, mesh.el_type, True)
+# cfv.colorbar()
 # cfv.show_and_wait()
 
-# input('Press Enter for task B')
-
-
+# input('Press any key for task B')
 
 #################### Lets go task B!##################
 
@@ -135,14 +135,23 @@ for idx in range(tt.size - 1):
   next_temps = np.linalg.solve(C + dt*K, C@prev_temps + dt*f_1D)
   temps[:, idx+1] = next_temps
   
-# print(temps)
-T_90 = 0.9 * T_stat_max
 max_temps = np.max(temps, axis=0)
-index_T90 = np.argmax(max_temps > T_90)  
-# cfv.plt.plot(np.linalg.norm(temps, axis=0))
-# cfv.plt.show()
-print(max_temps)
-print(tt[index_T90])
+index_T90 = np.argmax(max_temps >  0.9 * T_stat_max)  
+
+five_temps = [
+  temps[:, 0],
+  temps[:, int(index_T90 * 0.03 / 4) * 1],
+  temps[:, int(index_T90 * 0.03 / 4) * 2],
+  temps[:, int(index_T90 * 0.03 / 4) * 3],
+  temps[:, int(index_T90 * 0.03)]
+]
+# for temps in five_temps: 
+  # cfv.figure()
+  # cfv.draw_nodal_values_shaded(temps, coords, edof, 'asdf', mesh.dofs_per_node, mesh.el_type)
+  # cfv.colorbar()
+  # cfv.show()
+
+print('Time to 90% max ' + str(tt[index_T90]) + ' seconds')
 
 # Först en frihetsgrad på stationärt
 # Kolla Konvektionsproblemet i boken
@@ -153,4 +162,3 @@ print(tt[index_T90])
 #välj deltat rimligt
 #trapetsmetod med theta=1, nudiffa allt:
 #a_n+1=(C+delta_t)^-1*(Ca_n+delta_t*f_k+1)
-#

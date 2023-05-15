@@ -29,8 +29,8 @@ h = 0.15*L
 t = 0.05*L
 thickness = 5e-3 #m
 
-ptype = 1 # plane stress
-ep = [thickness]
+ptype = 2 # plane strain
+ep = [ptype, thickness]
 
 D1 = np.eye(2) * k1
 D2 = np.eye(2) * k2
