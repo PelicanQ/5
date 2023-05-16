@@ -32,5 +32,7 @@ thickness = 5e-3 #m
 ptype = 2 # plane strain
 ep = [ptype, thickness]
 
+element_size_factor = 0.01
+
 D1 = np.eye(2) * k1
 D2 = np.eye(2) * k2

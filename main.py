@@ -5,7 +5,7 @@ import calfem.utils as cfu
 import calfem.vis_mpl as cfv
 import numpy as np
 
-from constants import (D1, D2, T_inf, a_c, cp1, cp2, h_flow, ny2, rho1, rho2, thickness, T_0, E1, E2, ny1, ny2, ptype)
+from constants import (D1, D2, T_inf, a_c, cp1, cp2, h_flow, ny2, rho1, rho2, thickness, T_0, E1, E2, ny1, ny2, element_size_factor)
 from geom import copper, dirichlet_wall, geom, left_wall_line
 from lines_along_spline import extract_lines, line_length
 from plantml import plantml
@@ -17,7 +17,7 @@ mesh = cfm.GmshMesh(geom)
 
 mesh.el_type = 2
 mesh.dofs_per_node = 1 # three cuz temp and poss'es
-mesh.el_size_factor = 0.15
+mesh.el_size_factor = element_size_factor
 mesh.return_boundary_elements = True
 coords, edof, dofs, bdofs, elementmarkers, belms = mesh.create()
 
@@ -146,12 +146,12 @@ five_temps = [
   temps[:, int(index_T90 * 0.03)]
 ]
 # for temps in five_temps: 
-  # cfv.figure()
-  # cfv.draw_nodal_values_shaded(temps, coords, edof, 'asdf', mesh.dofs_per_node, mesh.el_type)
-  # cfv.colorbar()
-  # cfv.show()
+#   cfv.figure()
+#   cfv.draw_nodal_values_shaded(temps, coords, edof, 'asdf', mesh.dofs_per_node, mesh.el_type)
+#   cfv.colorbar()
+#   cfv.show()
 
-#print('Time to 90% max ' + str(tt[index_T90]) + ' seconds')
+print('Time to 90% max ' + str(tt[index_T90]) + ' seconds')
 
 # Först en frihetsgrad på stationärt
 # Kolla Konvektionsproblemet i boken

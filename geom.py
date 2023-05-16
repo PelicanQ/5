@@ -7,6 +7,8 @@ from constants import a,b,h,t,d,c,L
 import matplotlib as mpl
 import calfem.vis_mpl as cfv
 
+right_sym = 5
+top_sym = 15
 fixed_wall = 10
 left_wall_line = 20
 dirichlet_wall = 25
@@ -48,14 +50,14 @@ geom.spline([5, 6])
 geom.spline([6, 7])
 geom.spline([7, 8], marker=dirichlet_wall)
 geom.spline([8, 9], marker=dirichlet_wall)
-geom.spline([9, 10])
+geom.spline([9, 10], marker=right_sym)
 geom.spline([10, 11], marker=dirichlet_wall)
 geom.spline([11, 12], marker=dirichlet_wall)
 geom.spline([12, 13], marker=dirichlet_wall)
 geom.spline([13, 14], marker=dirichlet_wall)
 geom.spline([14, 15], marker=dirichlet_wall)
 geom.spline([15, 16], marker=dirichlet_wall)
-geom.spline([16, 17])
+geom.spline([16, 17], marker=top_sym)
 geom.spline([17, 18], marker=left_wall_line)
 geom.spline([18, 0], marker=fixed_wall)
 
@@ -67,5 +69,5 @@ geom.spline([6, 19])
 lines = [i for i in range(len(geom.points)-1)]
 geom.surface(lines, marker=copper)
 geom.surface([0,1,2,3,4,5,20,19], marker=nylon)
-# cfv.draw_geometry(g)
+# cfv.draw_geometry(geom)
 # cfv.show_and_wait()
