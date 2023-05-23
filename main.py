@@ -122,7 +122,7 @@ for el_edof, el_ex, el_ey, el_marker in zip(edof, ex, ey, elementmarkers):
 
 # cfv.plt.spy(C)
 t0 = 0
-t1 = 80
+t1 = 90
 dt = 0.05
 
 tt = np.arange(t0, t1, dt)
@@ -136,7 +136,7 @@ for idx in range(tt.size - 1):
   temps[:, idx+1] = next_temps
 
 max_temps = np.max(temps, axis=0)
-index_T90 = np.argmax(max_temps >  0.9 * T_stat_max)  
+index_T90 = np.argmax(max_temps >  T_0+0.9 * (T_stat_max-T_0))  
 
 five_temps = [
   temps[:, 0],
