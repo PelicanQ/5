@@ -110,7 +110,9 @@ for i, el_topo in enumerate(edof):
   el_nodes[i, :] = node_inds
 
 # +1 because node number is node index +1  
-cfv.draw_nodal_values_shaded(von_mises_node, coords, el_nodes+1, 'Yeni', mesh.dofs_per_node, mesh.el_type)
+cfv.draw_nodal_values_shaded(von_mises_node, coords, el_nodes+1, 'von Mises stress field [Pa]', mesh.dofs_per_node, mesh.el_type)
+cfv.plt.xlabel('X Position [m]')
+cfv.plt.ylabel('Y Position [m]')
 cfv.colorbar()
 cfv.figure()
 cfv.draw_displacements(a, coords, edof, mesh.dofs_per_node, mesh.el_type, True, 1)
