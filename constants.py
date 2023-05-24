@@ -1,6 +1,8 @@
 import calfem.core as cfc
 import numpy as np
-#Materialparametrar, koppar: 1, nylon: 2
+
+# Material parameters, copper: 1, nylon: 2
+
 E1 = 128e9    #Pa
 E2 = 3e9      #Pa
 ny1 = 0.36
@@ -19,7 +21,7 @@ T_inf = 18       #grader C
 T_0 = 18       #grader C
 h_flow = -10**5       #W/m^2
 
-#Sidor
+# Sides of shape
 L = 5e-3   #m
 a = 0.1*L
 b = 0.1*L
@@ -34,5 +36,6 @@ ep = [ptype, thickness]
 
 element_size_factor = 0.15
 
+# Constitutive matrix for heat flow
 D1 = np.eye(2) * k1
 D2 = np.eye(2) * k2
